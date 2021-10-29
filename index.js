@@ -20,9 +20,10 @@ async function run() {
         await client.connect();
         const database = client.db("tourEasedb");
         const packagesCollection = database.collection("packages");
+        const orderCollection = database.collection("orders");
         console.log("database connected");
 
-        //GET API
+        //GET All packages API
         app.get('/packages', async (req, res) => {
 
             const cursor = packagesCollection.find({});
@@ -30,14 +31,32 @@ async function run() {
             res.json(packages)
         })
 
+        //GET All Orders API
+        app.get('/orders', async (req, res) => {
+
+            const cursor = orderCollection.find({});
+            const orders = await cursor.toArray();
+            res.json(orders)
+        })
+        app.get('/package/detail/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const package = await packagesCollection.findOne(query);
+            res.json(package);
+        })
+
         //POST API
         app.post('/addPackage', async (req, res) => {
             const newPackage = req.body;
-            console.log("newPackage", newPackage)
-
-
             const result = await packagesCollection.insertOne(newPackage);
             res.json(result)
+        })
+
+
+        app.post('/proceedOrder',async(req, res)=> {
+            const order = req.body;
+            const result = await orderCollection.insertOne(order);
+            res.send(result)
         })
 
 
