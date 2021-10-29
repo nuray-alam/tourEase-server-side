@@ -32,8 +32,12 @@ async function run() {
 
         //POST API
         app.post('/addPackage', async (req, res) => {
-            console.log("product to be added", req.body)
-            res.json("added")
+            const newPackage = req.body;
+            console.log("newPackage", newPackage)
+
+
+            const result = await packagesCollection.insertOne(newPackage);
+            res.json(result)
         })
 
 
