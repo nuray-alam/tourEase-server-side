@@ -30,7 +30,13 @@ async function run() {
             res.json(packages)
         })
 
-        
+        //POST API
+        app.post('/addPackage', async (req, res) => {
+            console.log("product to be added", req.body)
+            res.json("added")
+        })
+
+
 
     } finally {
         //   await client.close();
