@@ -21,6 +21,8 @@ async function run() {
         const database = client.db("tourEasedb");
         const packagesCollection = database.collection("packages");
         const orderCollection = database.collection("orders");
+        const reviewCollection = database.collection("reviews");
+        const advantageCollection = database.collection("advantages");
         console.log("database connected");
 
         //GET All packages API
@@ -38,11 +40,26 @@ async function run() {
             const orders = await cursor.toArray();
             res.json(orders)
         })
+
+        app.get('/advantages',async(req, res)=> {
+            const cursor = advantageCollection.find({});
+            const advantages = await cursor.toArray();
+            res.json(advantages)
+        })
+
+
         app.get('/package/detail/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const package = await packagesCollection.findOne(query);
             res.json(package);
+        })
+
+        app.get('/reviews',async(req, res)=> {
+
+            const cursor = reviewCollection.find({});
+            const reviews = await cursor.toArray();
+            res.json(reviews)
         })
 
         //POST API
@@ -53,12 +70,33 @@ async function run() {
         })
 
 
-        app.post('/proceedOrder',async(req, res)=> {
+        app.post('/proceedOrder', async (req, res) => {
             const order = req.body;
             const result = await orderCollection.insertOne(order);
             res.send(result)
         })
 
+        //DELETE API
+        app.delete('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const result = await orderCollection.deleteOne(query);
+            res.json(result);
+        })
+
+        //UPDATE API
+        app.put('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    status: 'approved'
+                },
+            };
+            const result = await orderCollection.updateOne(filter, updateDoc, options);
+            res.json(result);
+        })
 
 
     } finally {
