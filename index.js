@@ -40,21 +40,21 @@ async function run() {
             const orders = await cursor.toArray();
             res.json(orders)
         })
-
+        //GET ALL Advantages API
         app.get('/advantages',async(req, res)=> {
             const cursor = advantageCollection.find({});
             const advantages = await cursor.toArray();
             res.json(advantages)
         })
 
-
+        //GET Package Detail by Id API
         app.get('/package/detail/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const package = await packagesCollection.findOne(query);
             res.json(package);
         })
-
+        //GET All Reviews API
         app.get('/reviews',async(req, res)=> {
 
             const cursor = reviewCollection.find({});
@@ -62,21 +62,21 @@ async function run() {
             res.json(reviews)
         })
 
-        //POST API
+        //POST New Package API
         app.post('/addPackage', async (req, res) => {
             const newPackage = req.body;
             const result = await packagesCollection.insertOne(newPackage);
             res.json(result)
         })
 
-
+        //POST  New Order
         app.post('/proceedOrder', async (req, res) => {
             const order = req.body;
             const result = await orderCollection.insertOne(order);
             res.send(result)
         })
 
-        //DELETE API
+        //DELETE Order API
         app.delete('/orders/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) }
@@ -84,7 +84,7 @@ async function run() {
             res.json(result);
         })
 
-        //UPDATE API
+        //UPDATE Order Status API
         app.put('/orders/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
